@@ -1,0 +1,80 @@
+<div class="product-table">
+  <div class="product-table-controls">
+    <input type="text" [(ngModel)]="filterValue" placeholder="Buscar..." aria-label="Buscar" class="search-input" />
+
+    <button class="add-button" (click)="navigateToAdd()">Agregar</button>
+  </div>
+
+  <div class="product-table-content">
+    <table aria-describedby="">
+      <thead>
+        <tr>
+          <th>Logo</th>
+          <th>Nombre del producto</th>
+          <th>Descripción</th>
+          <th>Fecha de liberación</th>
+          <th>Fecha de reestructuración</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let product of items">
+          <td>
+            <img [src]="product.logo" (error)="product.logo = 'assets/images/no-image.webp'" alt="Logo">
+          </td>
+          <td>{{ product.name }}</td>
+          <td>{{ product.description }}</td>
+          <td>{{ product.date_release | date:'MM/dd/yyyy' }}</td>
+          <td>{{ product.date_revision | date:'MM/dd/yyyy' }}</td>
+          <td>
+            <div (mouseleave)="showMenu[product.id] = false">
+              <button (click)="toggleMenu(product)">
+                <img src="assets/images/dots-vertical.svg" alt="Menu">
+              </button>
+
+              <div *ngIf="showMenu[product.id]" class="dropdown-menu">
+                <button (click)="onEdit(product); toggleMenu(product)">Editar</button>
+                <button (click)="onDelete(product.id, product.name); toggleMenu(product)">Eliminar</button>
+              </div>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="product-table-pagination">
+    <div>
+      {{ results }} Resultados
+    </div>
+
+    <div class="product-table-pagination-arrows">
+      <div class="product-table-pagination-arrows-buttons">
+        <button class="button button--rounded" [class.button--disabled]="!hasPreviousPage" [disabled]="!hasPreviousPage"
+          (click)="currentPage = currentPage - 1">
+          <img src="assets/images/chevron-left.svg" alt="Anterior">
+        </button>
+        <button class="button button--rounded" [class.button--disabled]="!hasNextPage" [disabled]="!hasNextPage"
+          (click)="currentPage = currentPage + 1">
+          <img src="assets/images/chevron-right.svg" alt="Siguiente">
+        </button>
+      </div>
+    </div>
+    <div>
+      <select class="product-table-page" [(ngModel)]="itemsPerPage" aria-label="Producto por página" (change)="currentPage = 1">
+        <option value="5">5</option>
+        <option value="10">10</option>
+        <option value="25">25</option>
+        <option value="50">50</option>
+      </select>
+    </div>
+
+  </div>
+</div>
+
+<app-confirmation-modal
+    *ngIf="isModalOpen"
+    [productName]="currentProductName"
+    (confirmAction)="deleteConfirmed()"
+    (cancelAction)="closeModal()"
+></app-confirmation-modal>

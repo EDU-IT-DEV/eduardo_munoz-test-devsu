@@ -1,0 +1,5 @@
+<div [formGroup]="form">
+  <p>{{ label }}</p>
+  <input [formControlName]="formName" [type]="type" [placeholder]="placeholder" [readonly]="isReadOnly" />
+  <p class="inputError" [class.inputError]="isInvalidField">{{ getErrorMessage }}</p>
+</div>
